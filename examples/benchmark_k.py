@@ -1,3 +1,8 @@
+#encoding:utf-8
+"""
+参考 benchmark.py 修改，使用不同的 k 值遍历实验 MAE 值，改变进行初始化, 修改相似度参数。
+"""
+
 '''This module runs a 5-Fold CV for all the algorithms (default parameters) on
 the movielens datasets, and reports average RMSE, MAE, and total computation
 time.  It is used for making tables in the README.md file'''
@@ -29,6 +34,8 @@ from surprise import CoClustering
 # The algorithms to cross-validate
 classes = (SVD, SVDpp, NMF, SlopeOne, KNNBasic, KNNWithMeans, KNNBaseline,
            CoClustering, BaselineOnly, NormalPredictor)
+
+Ks = range(5, 50, 5)
 
 # ugly dict to map algo names and datasets to their markdown links in the table
 stable = 'http://surprise.readthedocs.io/en/stable/'
@@ -78,11 +85,21 @@ data = Dataset.load_builtin(dataset)
 kf = KFold(random_state=0)  # folds will be the same for all algorithms.
 
 table = []
-for klass in classes:
+for k in Ks:
+    klass = KNNBaseline # 使用不同的 k  进行初始化
     start = time.time()
-    out = cross_validate(klass(), data, ['rmse', 'mae'], kf)
+
+    # 启用新的相似度公式
+    sim_options = {'name': 'cosine',
+               'user_based': False  # compute  similarities between items
+               }
+    # 定义类
+    knn = klass(k=k, verbose=True, sim_options=sim_options)
+    
+    out = cross_validate(knn, data, ['rmse', 'mae'], kf)
     cv_time = str(datetime.timedelta(seconds=int(time.time() - start)))
     link = LINK[klass.__name__]
+    link = '{}@{}'.format(klass.__name__,k)
     mean_rmse = '{:.3f}'.format(np.mean(out['test_rmse']))
     mean_mae = '{:.3f}'.format(np.mean(out['test_mae']))
 

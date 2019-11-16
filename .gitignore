@@ -26,3 +26,7 @@ tags
 settings.json
 
 .pytest_cache
+
+.vscode/launch.json
+
+examples/benchmark.result
