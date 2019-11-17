@@ -1,14 +1,13 @@
 #encoding:utf-8
+'''This module runs a 5-Fold CV for all the algorithms (default parameters) on
+the movielens datasets, and reports average RMSE, MAE, and total computation
+time.  It is used for making tables in the README.md file'''
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 """
 参考 benchmark.py 修改，使用不同的 k 值遍历实验 MAE 值，改变进行初始化, 修改相似度参数。
 """
 
-'''This module runs a 5-Fold CV for all the algorithms (default parameters) on
-the movielens datasets, and reports average RMSE, MAE, and total computation
-time.  It is used for making tables in the README.md file'''
-
-from __future__ import (absolute_import, division, print_function,
-                        unicode_literals)
 import time
 import datetime
 import random
